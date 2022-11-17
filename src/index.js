@@ -28,48 +28,38 @@ let nodes = [];
 // nodes.push([width / 4, boxHeight / 3]);
 // nodes.push([width / 1.5, boxHeight / 3]);
 for (let i = 0; i < hidden_layer_count + 2; i++) {
+  nodes[i] = [];
   for (let j = 0; j < node_count[i]; j++) {
-    nodes.push({
+    nodes[i].push({
       x: (width / (hidden_layer_count + 2)) * (i + 0.5),
       y: (boxHeight / (node_count[i] + 1)) * (j + 1),
     });
   }
 }
 
-for (let i = 0; i < nodes.length; i++) {
-  g
-    .append("circle")
-    .attr("cx", nodes[i].x)
-    .attr("cy", nodes[i].y)
-    .attr("r", 10)
-    .style("fill", "red");
+for (let i = 0; i < hidden_layer_count + 1; i++) {
+  for (let j = 0; j < node_count[i]; j++) {
+    for (let k = 0; k < node_count[i + 1]; k++) {
+      g.append("line")
+        .attr("x1", nodes[i][j].x)
+        .attr("y1", nodes[i][j].y)
+        .attr("x2", nodes[i + 1][k].x)
+        .attr("y2", nodes[i + 1][k].y)
+        .style("stroke", "black")
+        .style("stroke-width", 1);
+    }
+  }
 }
 
-// let links = [];
-// // Link from the first node to the second
-// links.push(
-//   d3.linkVertical()({
-//     source: nodes[1],
-//     target: nodes[0],
-//   })
-// );
-//
-// // Link from the first node to the third
-// links.push(
-//   d3.linkVertical()({
-//     source: nodes[1],
-//     target: nodes[2],
-//   })
-// );
-//
-// // Append the links to the svg element
-// for (let i = 0; i < links.length; i++) {
-//   svg
-//     .append("path")
-//     .attr("d", links[i])
-//     .attr("stroke", "black")
-//     .attr("fill", "none");
-// }
+for (let i = 0; i < hidden_layer_count + 2; i++) {
+  for (let j = 0; j < node_count[i]; j++) {
+    g.append("circle")
+      .attr("cx", nodes[i][j].x)
+      .attr("cy", nodes[i][j].y)
+      .attr("r", 10)
+      .style("fill", "red");
+  }
+}
 
 d3.select("body").append(() => svg.node());
 initZoom();
