@@ -1,16 +1,10 @@
 import * as d3 from "d3";
+import { handleZoom, initZoom, showWeight, hideWeight } from "./utils";
 
 let zoom = d3.zoom().on("zoom", handleZoom);
 
-function handleZoom(e) {
-  d3.select("svg g").attr("transform", e.transform);
-}
-
-function initZoom() {
-  d3.select("svg").call(zoom);
-}
-
 const layer_count = 5;
+const precision = 3;
 let node_count = new Array(layer_count).fill(0);
 node_count[0] = 3;
 node_count[1] = 2;
@@ -29,8 +23,6 @@ for (let i = 0; i < layer_count - 1; i++) {
     }
   }
 }
-console.log(weight_matrix);
-// console.log(node_count);
 
 const boxHeight = 600;
 const width = 600;
@@ -46,6 +38,7 @@ for (let i = 0; i < layer_count; i++) {
     nodes[i].push({
       x: (width / layer_count) * (i + 0.5),
       y: (boxHeight / (nodecount + 1)) * (j + 1),
+      val: Math.random(),
     });
   }
 }
@@ -77,35 +70,32 @@ for (let i = 0; i < layer_count - 1; i++) {
         .attr("display", "none")
         .attr("x", (nodes[i][j].x + nodes[i + 1][k].x) / 2)
         .attr("y", (nodes[i][j].y + nodes[i + 1][k].y) / 2)
-        .text(weight_matrix[i][k][j].toFixed(2));
+        .text(weight_matrix[i][k][j].toFixed(precision));
     }
   }
-}
-
-function showWeight(line) {
-  d3.select(line.previousSibling).style("stroke", "red");
-  let text = d3.select(line.nextSibling);
-  text.attr("display", "true");
-}
-
-function hideWeight(line) {
-  d3.select(line.previousSibling).style("stroke", "black");
-  let text = d3.select(line.nextSibling);
-  text.attr("display", "none");
 }
 
 // draw neurons
 for (let i = 0; i < layer_count; i++) {
   for (let j = 0; j < node_count[i]; j++) {
-    // output layer bias
     let color = "red";
     g.append("circle")
       .attr("cx", nodes[i][j].x)
       .attr("cy", nodes[i][j].y)
       .attr("r", 10)
-      .style("fill", color);
+      .style("fill", color)
+      .style("stroke", "black")
+      .text(nodes[i][j].val);
+    g.append("text")
+      .attr("class", "nodeText")
+      .attr("text-anchor", "middle")
+      .attr("x", nodes[i][j].x)
+      .attr("y", nodes[i][j].y)
+      .attr("dy", "0.35em")
+      .attr("font-size", "0.5em")
+      .text(nodes[i][j].val.toFixed(precision));
   }
 }
 
 d3.select("body").append(() => svg.node());
-initZoom();
+initZoom(zoom);
