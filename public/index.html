@@ -7,5 +7,22 @@
     <!-- <link href="css/style.css" rel="stylesheet"> -->
     <script src="main.js" type="module"></script>
   </head>
-  <body>hello world</body>
+  <body>
+    <div id="tooltip_span" style="position: fixed; display: none">.</div>
+    <div style="margin-left: 35%; position: fixed; margin-top: 2px">
+      <span style="position: fixed; margin: auto auto; text-align: center">
+        <label>Batch number:</label>
+        <input
+          type="number"
+          id="batch_number"
+          name="quantity"
+          min="0"
+          max="0"
+        />
+        <button type="button" id="batch_change" value="0" autocomplete="off">
+          Go
+        </button>
+      </span>
+    </div>
+  </body>
 </html>

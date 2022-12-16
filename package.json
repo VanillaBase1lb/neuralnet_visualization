@@ -23,7 +23,8 @@
   },
   "homepage": "https://github.com/VanillaBase1lb/neuralnet_visualization#readme",
   "dependencies": {
-    "d3": "^7.6.1"
+    "d3": "^7.6.1",
+    "file-loader": "^6.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.18.2",

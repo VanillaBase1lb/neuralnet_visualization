@@ -7,12 +7,16 @@ const isProduction = process.env.NODE_ENV == "production";
 
 const config = {
   entry: "./src/index.js",
+  experiments: {
+    topLevelAwait: true,
+  },
   output: {
     path: path.resolve(__dirname, "dist"),
   },
   devServer: {
     open: true,
     host: "localhost",
+    static: path.join(__dirname, "public/data"),
   },
   plugins: [
     new HtmlWebpackPlugin({
