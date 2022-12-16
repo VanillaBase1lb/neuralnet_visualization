@@ -1,12 +1,7 @@
 import * as d3 from "d3";
-import { drawNodes } from "./draw";
 
 export function handleZoom(e) {
   d3.select("svg g").attr("transform", e.transform);
-}
-
-export function initZoom(zoom) {
-  d3.select("svg").call(zoom);
 }
 
 export function showWeight(line, e, weight, color, precision) {
@@ -30,8 +25,9 @@ export function updateNodes(
   nodes,
   boxWidth,
   boxHeight,
-  allnodes,
-  batch
+  nodes_all,
+  batch,
+  epoch
 ) {
   for (let i = 0; i < layer_count; i++) {
     nodes[i] = [];
@@ -40,35 +36,30 @@ export function updateNodes(
       nodes[i].push({
         x: (boxWidth / layer_count) * (i + 0.5),
         y: (boxHeight / (nodecount + 1)) * (j + 1),
-        val: allnodes[i][batch][j],
+        val: nodes_all[epoch][i][batch][j],
       });
     }
   }
   return nodes;
 }
 
-export function updateNodeValues(
+export function updateWeights(
   layer_count,
   node_count,
-  batch_nodes,
-  boxWidth,
-  boxHeight,
-  nodes_all,
-  g,
-  precision,
-  active_color
+  weight_matrix,
+  weights_all,
+  epoch
 ) {
-  let batch = document.getElementById("batch_number").value;
-  updateNodes(
-    layer_count,
-    node_count,
-    batch_nodes,
-    boxWidth,
-    boxHeight,
-    nodes_all,
-    batch
-  );
-  g.selectAll("circle").remove();
-  g.selectAll("text").remove();
-  drawNodes(layer_count, node_count, batch_nodes, g, precision, active_color);
+  for (let i = 0; i < layer_count - 1; i++) {
+    weight_matrix[i] = new Array(node_count[i + 1]);
+    for (let j = 0; j < node_count[i + 1]; j++) {
+      weight_matrix[i][j] = new Array(node_count[i]);
+      for (let k = 0; k < node_count[i]; k++) {
+        // weight_matrix[i][j][k] = Math.random();
+        // 0 in 3 nested level because the second element array is bias values
+        weight_matrix[i][j][k] = weights_all[epoch][i][0][k][j];
+      }
+    }
+  }
+  return weight_matrix;
 }

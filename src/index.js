@@ -1,40 +1,33 @@
 import * as d3 from "d3";
-import { handleZoom, initZoom, updateNodes, updateNodeValues } from "./utils";
+import { handleZoom, updateNodes, updateWeights } from "./utils";
 import { getNodes, getWeights } from "./data";
 import { drawNodes, drawWeights } from "./draw";
 
 let zoom = d3.zoom().on("zoom", handleZoom);
 
-let batch_nodes = [];
+let nodes = [];
 let nodes_all;
 await getNodes().then((data) => {
   nodes_all = data;
 });
-const layer_count = nodes_all.length;
+const epoch_count = nodes_all.length;
+const batch_count = nodes_all[0][0].length;
+const layer_count = nodes_all[0].length;
 const precision = 3;
 const active_color = "red";
 const inactive_color = "gray";
 let node_count = new Array(layer_count);
 for (let i = 0; i < layer_count; i++) {
-  node_count[i] = nodes_all[i][0].length;
+  node_count[i] = nodes_all[0][i][0].length;
 }
 
-let allweights;
+let weights_all;
 await getWeights().then((data) => {
-  allweights = data;
+  weights_all = data;
 });
 // weight matrix
 let weight_matrix = new Array(layer_count - 1);
-for (let i = 0; i < layer_count - 1; i++) {
-  weight_matrix[i] = new Array(node_count[i + 1]);
-  for (let j = 0; j < node_count[i + 1]; j++) {
-    weight_matrix[i][j] = new Array(node_count[i]);
-    for (let k = 0; k < node_count[i]; k++) {
-      // weight_matrix[i][j][k] = Math.random();
-      weight_matrix[i][j][k] = allweights[i][0][k][j];
-    }
-  }
-}
+updateWeights(layer_count, node_count, weight_matrix, weights_all, 0);
 
 const boxHeight = 1000;
 const boxWidth = 1000;
@@ -45,10 +38,11 @@ const g = svg.append("g");
 updateNodes(
   layer_count,
   node_count,
-  batch_nodes,
+  nodes,
   boxWidth,
   boxHeight,
   nodes_all,
+  0,
   0
 );
 
@@ -57,7 +51,7 @@ drawWeights(
   layer_count,
   node_count,
   weight_matrix,
-  batch_nodes,
+  nodes,
   g,
   precision,
   active_color,
@@ -65,22 +59,41 @@ drawWeights(
 );
 
 // draw neurons
-drawNodes(layer_count, node_count, batch_nodes, g, precision, active_color);
+drawNodes(layer_count, node_count, nodes, g, precision, active_color);
 
 d3.select("body").append(() => svg.node());
-initZoom(zoom);
+d3.select("svg").call(zoom);
 
-document.getElementById("batch_number").attributes.max.value = nodes_all[0].length - 1;
-document.getElementById("batch_change").addEventListener("click", () => {
-  updateNodeValues(
+document.getElementById("batch_number").attributes.max.value = batch_count - 1;
+document.getElementById("epoch_number").attributes.max.value = epoch_count - 1;
+document.getElementById("change").addEventListener("click", () => {
+  let batch = document.getElementById("batch_number").value;
+  let epoch = document.getElementById("epoch_number").value;
+  if (batch < 0 || batch >= batch_count || epoch < 0 || epoch >= epoch_count) {
+    alert("Invalid batch or epoch number");
+    return;
+  }
+  updateWeights(layer_count, node_count, weight_matrix, weights_all, epoch);
+  updateNodes(
     layer_count,
     node_count,
-    batch_nodes,
+    nodes,
     boxWidth,
     boxHeight,
     nodes_all,
+    batch,
+    epoch
+  );
+  g.selectAll().remove();
+  drawWeights(
+    layer_count,
+    node_count,
+    weight_matrix,
+    nodes,
     g,
     precision,
-    active_color
+    active_color,
+    inactive_color
   );
+  drawNodes(layer_count, node_count, nodes, g, precision, active_color);
 });

@@ -5,7 +5,7 @@ export async function getNodes() {
 }
 
 export async function getWeights() {
-	let res = await fetch("/weights2.json");
+	let res = await fetch("/weights.json");
 	let data = await res.json();
 	return data;
 }
