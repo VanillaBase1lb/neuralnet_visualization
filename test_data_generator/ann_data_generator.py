@@ -25,8 +25,8 @@ y = train['color'].values
 
 model = keras.Sequential([
     keras.layers.Dense(4, input_shape=(2,), activation='relu'),
-    keras.layers.Dense(10, activation='relu'),
-    keras.layers.Dense(10, activation='relu'),
+    keras.layers.Dense(5, activation='relu'),
+    keras.layers.Dense(5, activation='relu'),
     keras.layers.Dense(2, activation='softmax')
 ])
 
@@ -70,26 +70,26 @@ nodes = open("nodes.json", "w")
 obj2 = json.dumps(activations_list, cls=NumpyArrayEncoder, indent=2)
 nodes.write(obj2)
 
-plt.plot(history.history['accuracy'])
+# plt.plot(history.history['accuracy'])
 #plt.plot(history.history['val_accuracy'])
-plt.title('model accuracy')
-plt.ylabel('accuracy')
-plt.xlabel('epoch')
-plt.legend(['train', 'test'], loc='upper left')
+# plt.title('model accuracy')
+# plt.ylabel('accuracy')
+# plt.xlabel('epoch')
+# plt.legend(['train', 'test'], loc='upper left')
 #plt.show()
 
-plt.plot(history.history['loss'])
+# plt.plot(history.history['loss'])
 #plt.plot(history.history['val_loss'])
-plt.title('model loss')
-plt.ylabel('loss')
-plt.xlabel('epoch')
-plt.legend(['train', 'test'], loc='upper left')
+# plt.title('model loss')
+# plt.ylabel('loss')
+# plt.xlabel('epoch')
+# plt.legend(['train', 'test'], loc='upper left')
 #plt.ylim(0, 30)
 #plt.show()
 
-x = test.loc[:, test.columns!='color'].values
-y = test['color'].values
+# x = test.loc[:, test.columns!='color'].values
+# y = test['color'].values
 
-print(model.evaluate(x, y))
+# print(model.evaluate(x, y))
 
-keras.utils.plot_model(model, to_file="model.png", show_shapes=True)
+# keras.utils.plot_model(model, to_file="model.png", show_shapes=True)
