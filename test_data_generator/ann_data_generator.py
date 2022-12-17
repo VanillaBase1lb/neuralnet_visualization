@@ -25,8 +25,8 @@ y = train['color'].values
 
 model = keras.Sequential([
     keras.layers.Dense(4, input_shape=(2,), activation='relu'),
-    keras.layers.Dense(5, activation='relu'),
-    keras.layers.Dense(5, activation='relu'),
+    keras.layers.Dense(10, activation='relu'),
+    keras.layers.Dense(10, activation='relu'),
     keras.layers.Dense(2, activation='softmax')
 ])
 
