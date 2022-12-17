@@ -50,7 +50,7 @@ The `./test_data_generator/` directory also contains a reference implementation 
 [ --> 1 for every 2 adjacent layers of the ANN (should be equal to no. of layers - 1)
 [ --> should be only 2. First one is weight matrix(n x m), second is bias array(m). Second one is currenly ignored, but should be present nevertheless
 [ --> N number of arrays where N = no. of nodes in the first out of the 2 adjacent layers
-    M number of arrays where M = no. of nodes in the second out of the 2 adjacent layers
+    M comma separated values where M = no. of nodes in the second out of the 2 adjacent layers
 ]
 ]
 ]
